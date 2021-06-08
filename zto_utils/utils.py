@@ -31,7 +31,7 @@ class CustomLogger(metaclass = SingletonMeta) :
             os.mkdir(dirname)
         
         fileHandler = logging.FileHandler( 
-            os.path.join(dirname , 'Log' +  now.strftime("%Y%m%d") + '.log'))
+            os.path.join(dirname , 'log_' +  now.strftime("%Y%m%d") + '.log'))
         streamHandler = logging.StreamHandler()
 
         fileHandler.setFormatter(formatter)
