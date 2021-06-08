@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name = 'zto_utils',
-    version = '0.1.0',
+    version = '0.1.1',
     url = 'https://github.com/0to1partners/zto_utils.git',
     author = 'aru',
     author_email = 'ytkim@0to1partners.com',
