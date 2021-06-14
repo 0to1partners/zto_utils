@@ -1,10 +1,11 @@
 #%%
 import logging
+from logging import handlers
 import os
 from datetime import datetime
 from time import time
 from functools import wraps
-
+from multiprocessing import Queue
 
 class SingletonMeta(type) :
     def __call__(cls, *args, **kwargs) :
@@ -57,9 +58,6 @@ def time_elapsed(func) :
 #         msg = f'Function {msg} : {time_elapsed}s elapsed '
 #         CustomLogger().info(msg)
 #         return ret
-        
-
-
 
 class CustomLogger(metaclass = SingletonMeta) :
     _logger = None
@@ -106,3 +104,67 @@ class CustomLogger(metaclass = SingletonMeta) :
     def critical(self, *args, **kwargs) :
         self._logger.critical(*args, *kwargs)
 
+
+class CustomLoggerMulti(metaclass = SingletonMeta) :
+    _logger = None
+    
+    def __init__(self) :
+        self._logger = logging.getLogger('main')
+        self._logger.setLevel(logging.DEBUG)
+
+        formatter = logging.Formatter(
+            '[%(asctime)s][%(levelname)s][%(filename)s:%(lineno)s] > %(message)s'
+            )
+
+        now = datetime.now()
+
+        dirname = './log'
+        if not os.path.exists(dirname) :
+            os.mkdir(dirname)
+        
+        fileHandler = logging.FileHandler( 
+            os.path.join(dirname , 'log_' +  now.strftime("%Y%m%d") + '.log'))
+        streamHandler = logging.StreamHandler()
+
+        fileHandler.setFormatter(formatter)
+        fileHandler.setLevel(logging.DEBUG)
+
+        streamHandler.setFormatter(formatter)
+        streamHandler.setLevel(logging.INFO)
+
+        # 큐 핸들러 생성
+        self.file_queue = Queue()
+        file_queue_handler = handlers.QueueHandler(self.file_queue)
+        self._logger.addHandler(file_queue_handler)
+
+        self.stream_queue = Queue()
+        stream_queue_handler = handlers.QueueHandler(self.stream_queue)
+        self._logger.addHandler(stream_queue_handler)
+
+        self.file_listner = handlers.QueueListener(self.file_queue, fileHandler)
+        self.stream_listner = handlers.QueueListener(self.stream_queue, streamHandler)
+        self.file_listner.start()
+        self.stream_listner.start()
+
+
+    def info(self, *args, **kwargs) :
+        self._logger.info(*args, *kwargs)
+    
+    def debug(self, *args, **kwargs) :
+        self._logger.debug(*args, *kwargs)
+    
+    def warning(self, *args, **kwargs) :
+        self._logger.warning(*args, *kwargs)
+    
+    def error(self, *args, **kwargs) :
+        self._logger.error(*args, *kwargs)
+
+    def critical(self, *args, **kwargs) :
+        self._logger.critical(*args, *kwargs)
+
+
+
+
+
+
+# %%
