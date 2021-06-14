@@ -1,1 +1,1 @@
-from .utils import CustomLogger, SingletonMeta
+from .utils import CustomLogger, SingletonMeta, TimeDecorator
