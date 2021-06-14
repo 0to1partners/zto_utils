@@ -35,9 +35,9 @@ class TimeDecorator() :
         self.func = f
 
     def __call__(self, *args, **kwargs) :
-        time_start = time.time()
+        time_start = time()
         ret = self.func(*args, **kwargs)
-        time_elapsed = round(time.time() - time_start, 3)
+        time_elapsed = round(time() - time_start, 3)
 
         msg = f'{self.func.__name__}'
         if len(args) > 0 :
@@ -96,3 +96,5 @@ class CustomLogger(metaclass = SingletonMeta) :
     def critical(self, *args, **kwargs) :
         self._logger.critical(*args, *kwargs)
 
+
+# %%
