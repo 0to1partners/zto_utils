@@ -16,38 +16,47 @@ class SingletonMeta(type) :
 
 
 
-# def time_elapsed(func, *args, **kwargs) :
-#     @wraps(func)
-#     def wrapper(func, *args, **kwargs) :
+def time_elapsed(func) :
+    @wraps(func)
+    def wrapper(*args, **kwargs) :
 
-#         time_start = datetime.now()
-#         ret = func(*args, **kwargs)
-#         time_elapsed = datetime.now() - time_start
-
-#         CustomLogger().info(f'{func} : time elpased ')
-#         return ret
-    
-#     return wrapper
-
-
-class TimeDecorator() :
-    def __init__(self, f) :
-        self.func = f
-
-    def __call__(self, *args, **kwargs) :
-        print(args, kwargs)
         time_start = time()
-        ret = self.func(*args, **kwargs)
+        ret = func(*args, **kwargs)
         time_elapsed = round( time() - time_start, 3 )
 
-        msg = f'{self.func.__name__}'
+        msg = f'{func.__name__}'
         if len(args) > 0 :
             msg = msg + f'{args}'
         if len(kwargs) > 0 :
             msg = msg + f'{kwargs}'
         msg = f'Function {msg} : {time_elapsed}s elapsed '
         CustomLogger().info(msg)
+
         return ret
+    
+    return wrapper
+
+
+# class TimeDecorator() :
+#     def __init__(self, f) :
+#         self.func = []#f
+#         self.func.append(f)
+
+#     def __call__(self, *args) :
+#         print(args)
+#         # print(args, kwargs)
+#         time_start = time()
+#         ret = self.func[0](*args)
+#         time_elapsed = round( time() - time_start, 3 )
+
+#         msg = f'{self.func.__name__}'
+#         if len(args) > 0 :
+#             msg = msg + f'{args}'
+#         # if len(kwargs) > 0 :
+#             # msg = msg + f'{kwargs}'
+#         msg = f'Function {msg} : {time_elapsed}s elapsed '
+#         CustomLogger().info(msg)
+#         return ret
         
 
 
@@ -97,5 +106,3 @@ class CustomLogger(metaclass = SingletonMeta) :
     def critical(self, *args, **kwargs) :
         self._logger.critical(*args, *kwargs)
 
-
-# %%
