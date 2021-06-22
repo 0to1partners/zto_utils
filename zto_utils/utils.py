@@ -1,6 +1,6 @@
 #%%
 import logging
-from logging import handlers
+from logging import getLogger, handlers
 import os
 from datetime import datetime
 from time import time
@@ -146,25 +146,22 @@ class CustomLoggerMulti(metaclass = SingletonMeta) :
         self.file_listner.start()
         self.stream_listner.start()
 
+    def get_logger(self) :
+        return self._logger
 
-    def info(self, *args, **kwargs) :
-        self._logger.info(*args, *kwargs)
-    
-    def debug(self, *args, **kwargs) :
-        self._logger.debug(*args, *kwargs)
-    
-    def warning(self, *args, **kwargs) :
-        self._logger.warning(*args, *kwargs)
-    
-    def error(self, *args, **kwargs) :
-        self._logger.error(*args, *kwargs)
 
-    def critical(self, *args, **kwargs) :
-        self._logger.critical(*args, *kwargs)
+logger = CustomLoggerMulti().get_logger()
 
 
 
+# %%
+if __name__ == '__main__' :
+    a = CustomLoggerMulti()
+    b = CustomLoggerMulti()
+    print( a is b, a == b)
 
+# %%
 
+CustomLoggerMulti().get_logger().info('aa')
 
 # %%
